@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.educandoweb.coursespring.entities.User;
-import com.educandoweb.coursespring.repositories.UserRepository;
+import com.educandoweb.coursespring.entities.Order;
+import com.educandoweb.coursespring.repositories.OrderRepository;
 
 /**
  * Camada de serviço: concentra regras de negócio e orquestra repositórios.
@@ -25,43 +25,43 @@ import com.educandoweb.coursespring.repositories.UserRepository;
  * Semanticamente diferente de @Component, mas o efeito no container é o mesmo: instância única (singleton
  * por padrão) gerenciada pelo Spring e elegível à injeção.
  */
-public class UserService {
+public class OrderService {
 
 	/*
 	 * INJEÇÃO DE DEPENDÊNCIA (por campo):
-	 * - Você não faz "new UserRepository()" (nem poderia: é interface).
-	 * - O Spring, ao criar o UserService, vê que precisa de um UserRepository e injeta o bean já existente.
+	 * - Você não faz "new OrderRepository()" (nem poderia: é interface).
+	 * - O Spring, ao criar o OrderService, vê que precisa de um OrderRepository e injeta o bean já existente.
 	 *
 	 * Alternativa moderna (muitos projetos preferem): injeção por CONSTRUTOR — torna dependências obrigatórias
 	 * e facilita testes unitários sem reflexão.
 	 */
 	@Autowired
 	// @Autowired: "cole aqui um bean compatível com este tipo". Se houver mais de um candidato, é preciso @Qualifier.
-	private UserRepository userRepository;
+	private OrderRepository OrderRepository;
 
-	/** Lista todos os usuários persistidos (delega ao repositório / JPA). */
-	public List<User> findAll() {
-		return userRepository.findAll();
+	/** Lista todos os pedidos persistidos (delega ao repositório / JPA). */
+	public List<Order> findAll() {
+		return OrderRepository.findAll();
 	}
 
 	/**
-	 * Busca um usuário pela chave primária.
+	 * Busca um pedido ({@code Order}) pela chave primária.
 	 *
-	 * O {@code UserRepository} herda de {@code JpaRepository}, que oferece {@code findById(Long)}.
-	 * Esse método retorna {@link Optional} em vez de {@code User} direto: se não existir linha com esse id
-	 * no banco, o Optional fica "vazio" (não existe null de User embutido no retorno do repositório).
+	 * O {@code OrderRepository} herda de {@code JpaRepository}, que oferece {@code findById(Long)}.
+	 * Esse método retorna {@link Optional} em vez de {@code Order} direto: se não existir linha com esse id
+	 * no banco, o Optional fica "vazio" (o repositório não devolve {@code null} de Order nesse retorno).
 	 *
-	 * {@code obj.get()} devolve o {@code User} se houver valor; se o Optional estiver vazio, lança
+	 * {@code obj.get()} devolve o {@code Order} se houver valor; se o Optional estiver vazio, lança
 	 * {@code java.util.NoSuchElementException} (o cliente HTTP verá erro 500 se não houver tratamento
 	 * no controller). Em APIs REST o curso costuma depois trocar isso por 404 (recurso não encontrado).
 	 *
-	 * @param id identificador do usuário (mesmo valor da coluna de chave na tabela).
-	 * @return entidade encontrada
+	 * @param id identificador do pedido (mesmo valor da coluna de chave primária na tabela mapeada por {@code Order}).
+	 * @return entidade {@code Order} encontrada
 	 */
-	public User findById(Long id) {
-		// findById do JpaRepository: consulta por chave primária; retorno Optional evita null explícito.
-		Optional<User> obj = userRepository.findById(id);
-		// get() extrai o User; se não houver registro com esse id, Optional vazio → NoSuchElementException.
+	public Order findById(Long id) {
+		// findById do JpaRepository: consulta por chave primária; Optional encapsula presença ou ausência de linha.
+		Optional<Order> obj = OrderRepository.findById(id);
+		// get() extrai o Order; se não houver pedido com esse id, Optional vazio → NoSuchElementException.
 		return obj.get();
 	}
 }
