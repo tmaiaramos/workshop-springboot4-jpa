@@ -1,11 +1,14 @@
 package com.educandoweb.coursespring.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
@@ -48,6 +51,9 @@ public class User implements Serializable {
 	private String email;
 	private String password;
 
+	@OneToMany(mappedBy = "client")
+	private List<Order> orders = new ArrayList<>();
+
 	/** Construtor vazio exigido pelo JPA para instanciar a entidade via reflexão. */
 	public User() {
 	}
@@ -77,6 +83,10 @@ public class User implements Serializable {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public List<Order> getOrders() {
+		return orders;
 	}
 
 	public void setId(Long id) {
