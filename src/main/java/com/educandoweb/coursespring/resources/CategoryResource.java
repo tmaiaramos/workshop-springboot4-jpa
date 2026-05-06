@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.educandoweb.coursespring.entities.Order;
-import com.educandoweb.coursespring.services.OrderService;
+import com.educandoweb.coursespring.entities.Category;
+import com.educandoweb.coursespring.services.CategoryService;
 
 /**
  * Camada web / REST (equivalente a um "controller" em APIs HTTP).
@@ -23,48 +23,48 @@ import com.educandoweb.coursespring.services.OrderService;
  * @RestController = @Controller + @ResponseBody em todos os métodos de mapeamento.
  * O retorno dos métodos (objetos Java) é serializado automaticamente para JSON (por padrão, Jackson).
  */
-@RequestMapping(value = "/orders")
+@RequestMapping(value = "/categories")
 /*
  * @RequestMapping no nível da classe: prefixo de URL para todos os endpoints deste resource.
- * Ex.: GET http://localhost:8080/orders → método findAll abaixo.
+ * Ex.: GET http://localhost:8080/categories → método findAll abaixo.
  */
-public class OrderResource {
+public class CategoryResource {
 
 	/*
 	 * INJEÇÃO DE DEPENDÊNCIA:
-	 * O Spring fornece a instância de OrderService (anotada com @Service) neste campo antes de atender requisições.
+	 * O Spring fornece a instância de CategoryService (anotada com @Service) neste campo antes de atender requisições.
 	 */
 	@Autowired
-	private OrderService orderService;
+	private CategoryService categoryService;
 
 	/**
-	 * Endpoint GET em /orders (porque a classe já tem @RequestMapping("/orders")).
+	 * Endpoint GET em /categories (porque a classe já tem @RequestMapping("/categories")).
 	 *
 	 * {@link ResponseEntity} permite controlar o status HTTP e o corpo; {@code ok().body(list)} = 200 + corpo.
 	 */
 	@GetMapping
 	/*
 	 * @GetMapping: atalho para @RequestMapping(method = RequestMethod.GET).
-	 * Sem path extra → usa só o prefixo da classe → GET /orders.
+	 * Sem path extra → usa só o prefixo da classe → GET /categories.
 	 */
-	public ResponseEntity<List<Order>> findAll() {
-		List<Order> list = orderService.findAll();
+	public ResponseEntity<List<Category>> findAll() {
+		List<Category> list = categoryService.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 
 	/**
-	 * Endpoint GET para um único pedido ({@code Order}), por id na URL.
+	 * Endpoint GET para um único usuário, por id na URL.
 	 *
-	 * - {@code @GetMapping("/{id}")} combina com o prefixo da classe: rota final {@code GET /orders/{id}}
-	 *   (ex.: {@code /orders/1}).
+	 * - {@code @GetMapping("/{id}")} combina com o prefixo da classe: rota final {@code GET /Categorys/{id}}
+	 *   (ex.: {@code /Categorys/1}).
 	 * - {@code @PathVariable Long id}: o Spring lê o trecho da URL que substitui {@code {id}} e converte
 	 *   para {@code Long}, passando no parâmetro do método.
 	 */
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Order> findById(@PathVariable Long id) {
-		// Delega a busca ao OrderService (repositório / JPA por baixo).
-		Order obj = orderService.findById(id);
-		// 200 OK + corpo JSON com o pedido (Jackson serializa a entidade Order).
+	public ResponseEntity<Category> findById(@PathVariable Long id) {
+		// Delega a regra de busca ao serviço (camada que fala com o repositório / JPA).
+		Category obj = categoryService.findById(id);
+		// 200 OK + corpo JSON com o usuário (Jackson serializa o objeto Category).
 		return ResponseEntity.ok().body(obj);
 	}
 }
