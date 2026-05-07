@@ -72,4 +72,19 @@ public class UserService {
 	public void delete(Long id) {
 		userRepository.deleteById(id);
 	}
+
+	public User update(Long id, User obj) {
+		
+		// O findById carrega o objeto da base de dados, o getReferenceById carrega o objeto sem carregar da base de dados.
+		// carrega somente a referência do objeto em entity, mas não carrega os dados do objeto. Essa operação é mais eficiente.	
+		User entity = userRepository.getReferenceById(id);
+		updateData(entity, obj);
+		return userRepository.save(entity);
+	}
+
+	private void updateData(User entity, User obj) {
+		entity.setName(obj.getName());
+		entity.setEmail(obj.getEmail());
+		entity.setPhone(obj.getPhone());
+	}
 }

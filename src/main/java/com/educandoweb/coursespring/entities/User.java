@@ -51,7 +51,7 @@ public class User implements Serializable {
 	private Long id;
 	private String name;
 	private String email;
-	private String password;
+	private String phone;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "client")
@@ -65,11 +65,11 @@ public class User implements Serializable {
 	 * Construtor com argumentos: conveniente para criar objetos no código (ex.: seed no {@code TestConfig}).
 	 * O {@code id} pode ser {@code null} na criação; o banco gera após {@code save}.
 	 */
-	public User(Long id, String name, String email, String password) {
+	public User(Long id, String name, String email, String phone) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
-		this.password = password;
+		this.phone = phone;
 	}
 
 	public Long getId() {
@@ -84,8 +84,8 @@ public class User implements Serializable {
 		return email;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPhone() {
+		return phone;
 	}
 
 	public List<Order> getOrders() {
@@ -104,8 +104,8 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	/**
@@ -134,6 +134,6 @@ public class User implements Serializable {
 
 	/** Representação em texto para logs e debug (evite logar senha em produção). */
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + "]";
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + "]";
 	}
 }
