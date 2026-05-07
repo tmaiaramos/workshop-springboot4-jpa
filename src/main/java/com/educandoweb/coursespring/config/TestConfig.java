@@ -10,11 +10,13 @@ import org.springframework.context.annotation.Profile;
 
 import com.educandoweb.coursespring.entities.Category;
 import com.educandoweb.coursespring.entities.Order;
+import com.educandoweb.coursespring.entities.OrderItem;
 import com.educandoweb.coursespring.entities.Product;
 import com.educandoweb.coursespring.entities.User;
 import com.educandoweb.coursespring.entities.enums.OrderStatus;
 import com.educandoweb.coursespring.repositories.CategoryRepository;
 import com.educandoweb.coursespring.repositories.OrderRepository;
+import com.educandoweb.coursespring.repositories.OrderItemRepository;
 import com.educandoweb.coursespring.repositories.ProductRepository;
 import com.educandoweb.coursespring.repositories.UserRepository;
 
@@ -51,9 +53,11 @@ public class TestConfig implements CommandLineRunner {
 	// Injeção do repositório JPA gerado pelo Spring Data — necessário para saveAll no banco em memória (H2).
 	private CategoryRepository categoryRepository;
 	@Autowired
-	// Injeção do repositório JPA gerado pelo Spring Data — usado no seed de produtos e na persistência do N:N (categorias).
+	// Injeção do repositório JPA gerado pelo Spring Data — usado na persistência do N:N (Product).
 	private ProductRepository productRepository;
-
+	@Autowired
+	// Injeção do repositório JPA gerado pelo Spring Data — usado na persistência do N:N (OrderItem).
+	private OrderItemRepository orderItemRepository;
 	@Override
 	public void run(String... args) throws Exception {
 		// userRepository.deleteAll(); // descomente se quiser limpar a tabela antes de inserir (útil em retestes).
@@ -95,5 +99,12 @@ public class TestConfig implements CommandLineRunner {
 
 		userRepository.saveAll(Arrays.asList(u1, u2));
 		orderRepository.saveAll(Arrays.asList(o1, o2, o3));		
+
+		OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
+		OrderItem oi2 = new OrderItem(o1, p3, 1, p3.getPrice());
+		OrderItem oi3 = new OrderItem(o2, p3, 2, p3.getPrice());
+		OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice());
+
+		orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3, oi4));
 	}
 }
