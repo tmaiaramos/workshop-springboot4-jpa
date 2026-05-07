@@ -12,6 +12,8 @@ import com.educandoweb.coursespring.repositories.UserRepository;
 import com.educandoweb.coursespring.resources.exceptions.DatabaseException;
 import com.educandoweb.coursespring.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 /**
  * Camada de serviço: concentra regras de negócio e orquestra repositórios.
  *
@@ -86,11 +88,15 @@ public class UserService {
 
 	public User update(Long id, User obj) {
 		
+		try {
 		// O findById carrega o objeto da base de dados, o getReferenceById carrega o objeto sem carregar da base de dados.
-		// carrega somente a referência do objeto em entity, mas não carrega os dados do objeto. Essa operação é mais eficiente.	
-		User entity = userRepository.getReferenceById(id);
-		updateData(entity, obj);
-		return userRepository.save(entity);
+			// carrega somente a referência do objeto em entity, mas não carrega os dados do objeto. Essa operação é mais eficiente.	
+			User entity = userRepository.getReferenceById(id);
+			updateData(entity, obj);
+			return userRepository.save(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);		
+		}
 	}
 
 	private void updateData(User entity, User obj) {
