@@ -64,4 +64,8 @@ public class UserService {
 		// get() extrai o User; se não houver registro com esse id, Optional vazio → NoSuchElementException.
 		return obj.get();
 	}
+
+	public User insert(User obj) {
+		return userRepository.save(obj);
+	}
 }
