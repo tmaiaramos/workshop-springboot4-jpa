@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.educandoweb.coursespring.entities.User;
 import com.educandoweb.coursespring.repositories.UserRepository;
+import com.educandoweb.coursespring.services.exceptions.ResourceNotFoundException;
 
 /**
  * Camada de serviço: concentra regras de negócio e orquestra repositórios.
@@ -62,7 +63,8 @@ public class UserService {
 		// findById do JpaRepository: consulta por chave primária; retorno Optional evita null explícito.
 		Optional<User> obj = userRepository.findById(id);
 		// get() extrai o User; se não houver registro com esse id, Optional vazio → NoSuchElementException.
-		return obj.get();
+		//return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public User insert(User obj) {
