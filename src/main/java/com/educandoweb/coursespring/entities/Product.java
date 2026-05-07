@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -31,7 +34,16 @@ public class Product implements Serializable{
         joinColumns = @JoinColumn(name = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+    
+    /* Lado inverso do N:N com Order: não cria coluna FK em tb_product; o dono do relacionamento
+    * é Order (JoinTable lá). mappedBy aponta para o campo "items" em Order.
+    * HashSet: sem duplicatas na coleção em memória; lazy loading padrão para @ManyToMany.
+    */
     private Set<Category> categories = new HashSet<>();
+    
+    //@JsonIgnore
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product() {
     }
@@ -48,45 +60,56 @@ public class Product implements Serializable{
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
     
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Double getPrice() {
         return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
     
     public String getImgUrl() {
         return imgUrl;
     }
 
-    public Set<Category> getCategories() {
-        return categories;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-    
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+    
+    @JsonIgnore
+    public Set<Order> getOrders() {
+        Set<Order> set = new HashSet<>();
+        for (OrderItem x : items) {
+            set.add(x.getOrder());
+        }
+        return set;
+    }
+
+
     public int hashCode() {
         final int prime = 31;
         int result = 1;

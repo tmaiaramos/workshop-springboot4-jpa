@@ -41,6 +41,7 @@ public class OrderItem implements Serializable{
         id.setOrder(order);
     }
 
+    /* Removendo o JsonIgnore para que seja possível selecionar o pedido e relaciona-lo com o produto */
     public Product getProduct() {
         return id.getProduct();
     }
